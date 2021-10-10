@@ -1,0 +1,90 @@
+---
+title: "Comparaison de la regréssion logistique classique contre regréssion logistique avec lasso groupé"
+subtitle: "Application aux données Splice"
+author: "Cowboy Dupont"
+date: "01/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = F, warning = F, echo = F)
+```
+
+```{r init, include = F}
+library(grplasso)
+data("splice")
+```
+
+
+# Présentation des données 
+
+#### Modalités des 7 covariables
+```{r desc}
+sapply(splice[,-1], FUN = levels) 
+```
+
+#### Effectifs
+```{r desc2}
+tab <- sapply(splice[,-1], table, simplify = splice$y) / 4
+tab <- addmargins(tab)
+tab <- tab[,-8]
+knitr::kable(tab, caption = "% des modalités")
+```
+
+#### y
+
+```{r desc3}
+summary(as.factor(splice$y))
+```
+
+
+# Regréssion logistique
+
+```{r logi}
+res_reg_logi <- glm(formula = y ~ ., data = splice, family = binomial())
+summary(res_reg_logi)
+```
+
+Il y a $22$ coefficients.
+
+
+# Regréssion logistique avec lasso groupé
+
+
+```{r lasso, include=F}
+res_reg_lasso <- grplasso(y ~ ., data = splice, model = LogReg(), lambda = 20,
+                    center = TRUE, standardize = TRUE)
+```
+
+
+```{r lasso2}
+print(res_reg_lasso)
+```
+
+Il n'y a plus que 16 coefficients après pénalisation avec $\lambda  = 20$.
+
+
+#### Odds-ratio de la reg logi classique et reg logi avec lasso
+```{r lasso3}
+df <- data.frame(reg_logi = round(exp(coef(res_reg_logi)), 2), reg_lasso = round(exp(coef(res_reg_lasso)), 2),
+                 signif_reg_logi <- c("Non", "Non", "**", "Non", "*", "***", "***", ".", "***", "Non",
+"***", "***", "***", ".", "***", "***", "Non", "***", ".", "Non", ".", "Non"))
+names(df) <- c("Reg Logi", "Reg Logi + Lasso Groupé", "Signif reg logi")
+knitr::kable(df, main = "Comparaison des coefficients")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
