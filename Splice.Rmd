@@ -87,6 +87,13 @@ knitr::kable(Anova(res_reg_logi, type = "III"))
 
 
 
+```{r quanti}
+library(gglasso)
+data(bardet)
+group1 <- rep(1:20,each=5)
+m1 <- gglasso(x=bardet$x,y=bardet$y,group=group1,loss="ls")
+m1
+```
 
 
 
