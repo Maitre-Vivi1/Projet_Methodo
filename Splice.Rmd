@@ -80,6 +80,10 @@ knitr::kable(df, main = "Comparaison des coefficients")
 
 
 
+```{r anova}
+library(car)
+knitr::kable(Anova(res_reg_logi, type = "III"))
+```
 
 
 
