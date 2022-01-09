@@ -93,6 +93,20 @@ data(bardet)
 group1 <- rep(1:20,each=5)
 m1 <- gglasso(x=bardet$x,y=bardet$y,group=group1,loss="ls")
 m1
+
+
+library(glmnet)
+
+simu <- data.frame(y = rnorm(500), X1 = runif(500), X2 = rchisq(500,2), X3 = rcauchy(500),
+                   X4 = rf(500,1,3), X5 = as.factor(sample(1:4, 500, T, c(0.1,0.4,0.3,0.2))))
+
+
+#cv.glmnet(simu[,-1], simu[,1], family = "gaussian", alpha = 1, type.measure = "mse")
+
+#res_glmnet <- glmnet(simu[,-1], simu[,1], family = "gaussian", alpha = 1)
+
+#summary(res_glmnet)
+
 ```
 
 
