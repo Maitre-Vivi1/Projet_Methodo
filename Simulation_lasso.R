@@ -1,5 +1,6 @@
 library(gglasso)
 
+set.seed(1234)
 
 X1 <- rnorm(100,4,5)
 X2 <- rnorm(100,8,15)
@@ -66,15 +67,15 @@ df$lambda <- cv1$lambda
 row.names(df) <- NULL
 df <- as.data.frame(df)
 
-cols <- c("X1"="blue","X2"="red","X3"="orange2", "X4" = "slategray4", "X6" = "slategray4", "X7" = "slategray4")
+cols <- c("X1"="blue","X2"="red","X3"="orange2", "X4" = "slategray4", "X5" = "slategray4", "X6" = "slategray4")
 
 ggplot(data = df, aes(x = lambda)) +
   geom_line(aes(y = X1, color = "X1")) +
   geom_line(aes(y = X2, color = "X2")) +
   geom_line(aes(y = X3, color = "X3")) +
   geom_line(aes(y = X4, color = "X4")) +
-  geom_line(aes(y = X6, color = "X6")) +
-  geom_line(aes(y = X7, color = "X7")) +
+  geom_line(aes(y = X6, color = "X5")) +
+  geom_line(aes(y = X7, color = "X6")) +
   scale_colour_manual(name="Variables",values=cols, 
                       guide = guide_legend(override.aes=aes(fill=NA))) + 
   xlim(c(0,25)) +
@@ -96,8 +97,8 @@ ggplot(data = df2, aes(x = lambda)) +
   geom_line(aes(y = X2, color = "X2")) +
   geom_line(aes(y = X3, color = "X3")) +
   geom_line(aes(y = X4, color = "X4")) +
-  geom_line(aes(y = X6, color = "X6")) +
-  geom_line(aes(y = X7, color = "X7")) +
+  geom_line(aes(y = X6, color = "X5")) +
+  geom_line(aes(y = X7, color = "X6")) +
   scale_colour_manual(name="Variables",values=cols, 
                       guide = guide_legend(override.aes=aes(fill=NA))) + 
   xlim(c(0,25)) +
@@ -118,8 +119,8 @@ ggplot(data = df3, aes(x = lambda)) +
   geom_line(aes(y = X2, color = "X2")) +
   geom_line(aes(y = X3, color = "X3")) +
   geom_line(aes(y = X4, color = "X4")) +
-  geom_line(aes(y = X6, color = "X6")) +
-  geom_line(aes(y = X7, color = "X7")) +
+  geom_line(aes(y = X6, color = "X5")) +
+  geom_line(aes(y = X7, color = "X6")) +
   scale_colour_manual(name="Variables",values=cols, 
                       guide = guide_legend(override.aes=aes(fill=NA))) + 
   ylab("Coefficients") +
@@ -139,8 +140,8 @@ ggplot(data = df4, aes(x = lambda)) +
   geom_line(aes(y = X2, color = "X2")) +
   geom_line(aes(y = X3, color = "X3")) +
   geom_line(aes(y = X4, color = "X4")) +
-  geom_line(aes(y = X6, color = "X6")) +
-  geom_line(aes(y = X7, color = "X7")) +
+  geom_line(aes(y = X6, color = "X5")) +
+  geom_line(aes(y = X7, color = "X6")) +
   scale_colour_manual(name="Variables",values=cols, 
                       guide = guide_legend(override.aes=aes(fill=NA))) + 
   ylab("Coefficients") +
@@ -160,6 +161,14 @@ library(rbenchmark)
 
 
 benchmark(
+  "lm" = {
+    lm(Y~X1+X2+X3+X4+X6+X7-1)
+  },
+  
+  "glm" = {
+    glm(Y3~X1+X2+X3+X4+X6+X7-1, family = "binomial")
+  },
+  
   "lasso_classique_Y_continu" = {
     cv.gglasso(x=X, y=Y, group=1:6, loss="ls",
                pred.loss="L1", nfolds = 5)
